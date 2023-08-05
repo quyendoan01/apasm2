@@ -1,61 +1,82 @@
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
+    static Color color = new Color();
     private static Scanner sc = new Scanner(System.in);
+    static Admin admin = new Admin();
 
     public static void main(String[] args) {
-        Account account = new Account();
-        while (true){
-            System.out.println("1. Login");
-            System.out.println("2. Quit");
-            System.out.printf("Choose your option: ");
-            int choose = sc.nextInt();
-            switch (choose){
+        boolean running = true;
+        while (running){
+            System.out.println(color.PURPLE + "Admin/Menu" + color.RESET);
+            System.out.println(color.BLUE + "1. Account");
+            System.out.println("2. Schedule");
+            System.out.println("3. Exit");
+            int chooseAdmin = sc.nextInt();
+            switch (chooseAdmin){
                 case 1:
-                    System.out.printf("Username: ");
-                    String username = sc.next();
-                    System.out.printf("Password: ");
-                    String password = sc.next();
-                    if(Account.Login(username,password).equals("admin")){
-                        adminMenu();
-                    } else if (Account.Login(username,password).equals("user")) {
-                        userMenu();
-                    } else if (Account.Login(username,password).equals("manage")) {
-                        manageMenu();
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-    public static void adminMenu(){
-
-    }
-    private static void userMenu() {
-        UserAccount userAccount = new UserAccount();
-        while (true) {
-            System.out.println("1. Create Schedule");
-            System.out.println("2. Modify Schedule");
-            System.out.println("3. Remove Schedule");
-            System.out.println("4. View Schedule");
-            System.out.println("5. Logout");
-            int chooseUser = sc.nextInt();
-            switch (chooseUser){
-                case 1:
-                    userAccount.createSchedule();
+                    adminMenuAccount();
                     break;
                 case 2:
-                    userAccount.modifySchedule();
-                    break;
-                case 3:
-                    userAccount.removeSchedule();
+                    adminMenuSchedule();
                     break;
                 default:
+                    running = false;
                     break;
             }
         }
     }
-    private static void manageMenu() {
+    private static void adminMenuAccount() {
+        System.out.println(color.PURPLE + "Admin/Menu/Account" + color.RESET);
+        if (!admin.getManagerAccounts().isEmpty() && !admin.getStaffAccounts().isEmpty()){
+            for (ManagerAccount managerAccount : admin.getManagerAccounts()){
+                System.out.println(managerAccount.getUsername() + " (Manager)");
+                if (!managerAccount.getStaffAccounts().isEmpty())
+                for (StaffAccount staffAccount : managerAccount.getStaffAccounts()){
+                    System.out.println("    "+ staffAccount.getUsername() + " (Staff)");
+                }
+            }
+        }
+        else{
+            System.out.println(color.YELLOW+"Account is None" + color.RESET);
+        }
+        System.out.println(color.BLUE + "1. Create Account");
+        System.out.println("2. Modify Account");
+        System.out.println("3. Remove Account");
+        System.out.println("4. Back" + color.RESET);
+        int chooseAdminAccount = sc.nextInt();
+        switch (chooseAdminAccount){
+            case 1:
+                admin.addAccount();
+                break;
+            case 2:
+                admin.modifyAccount();
+                break;
+            case 3:
+                admin.removeAccount();
+            default:
+                break;
+        }
+    }
+    private static void adminMenuSchedule() {
+        System.out.println(color.PURPLE + "Admin/Menu/Schedule" + color.RESET);
+        System.out.println(color.BLUE + "1. Schedule for Manager");
+        System.out.println("2. Schedule for Staff");
+        System.out.println("3. Back" + color.RESET);
+        int chooseAdminAccount = sc.nextInt();
+        switch (chooseAdminAccount){
+            case 1:
+                admin.ScheduleForManager();
+                break;
+            case 2:
+                admin.ScheduleForStaff();
+                break;
+            default:
+                break;
+        }
     }
 }
